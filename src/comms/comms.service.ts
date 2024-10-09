@@ -39,13 +39,35 @@ export class CommsService {
     return user;
   }
 
+  getActiveCats(cats: Cat[]) {
+    return cats.filter((cat) => cat.subscriptionActive);
+  }
+
+  getFormattedCatNameList(cats: Cat[]) {
+    return cats.reduce((acc, cat, index) => {
+      if (index === 0) {
+        return cat.name;
+      } else if (index === cats.length - 1) {
+        return `${acc} and ${cat.name}`;
+      } else {
+        return `${acc}, ${cat.name}`;
+      }
+    }, '');
+  }
+
   getNextDelivery(id: string) {
-    console.log('user: ', this.getUserById(id));
+    const user = this.getUserById(id);
+    if (!user) return; // TODO: handle no user
+    const activeCats = this.getActiveCats(user.cats);
+    if (!activeCats.length) return; // TODO: handle no active cats
+    const formattedCatNameList = this.getFormattedCatNameList(activeCats);
+
+    const title = `Your next delivery for ${formattedCatNameList}`;
+    const message = `Hey ${user.firstName}! In two days' time, we'll be charging you for your next order for ${formattedCatNameList}'s fresh food.`;
 
     return {
-      title: 'Your next delivery for Dorian and Ocie',
-      message:
-        "Hey Kayleigh! In two days' time, we'll be charging you for your next order for Dorian and Ocie's fresh food.",
+      title,
+      message,
       totalPrice: 134.0,
       freeGift: true,
     };
