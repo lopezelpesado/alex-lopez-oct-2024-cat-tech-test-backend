@@ -4,6 +4,15 @@ import * as path from 'path';
 
 type PouchSize = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 
+const PouchSizePrices: Record<PouchSize, number> = {
+  A: 55.5,
+  B: 59.5,
+  C: 62.75,
+  D: 66.0,
+  E: 69.0,
+  F: 71.25,
+};
+
 interface Cat {
   name: string;
   subscriptionActive: boolean;
@@ -64,12 +73,16 @@ export class CommsService {
 
     const title = `Your next delivery for ${formattedCatNameList}`;
     const message = `Hey ${user.firstName}! In two days' time, we'll be charging you for your next order for ${formattedCatNameList}'s fresh food.`;
+    const totalPrice = activeCats.reduce((acc, cat) => {
+      return acc + PouchSizePrices[cat.pouchSize];
+    }, 0);
+    const freeGift = totalPrice > 120;
 
     return {
       title,
       message,
-      totalPrice: 134.0,
-      freeGift: true,
+      totalPrice,
+      freeGift,
     };
   }
 }
