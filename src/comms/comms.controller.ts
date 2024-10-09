@@ -1,12 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { CommsService } from './comms.service';
 
 @Controller('comms')
 export class CommsController {
   constructor(private readonly commsService: CommsService) {}
 
-  @Get()
-  getHello(): string {
-    return this.commsService.getComms();
+  @Get('your-next-delivery/:id')
+  getNextDelivery(@Param('id') id: string) {
+    return this.commsService.getNextDelivery(id);
   }
 }
